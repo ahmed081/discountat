@@ -47,7 +47,7 @@ class Statistic extends Controller
                     "expaired_ads_count"=>$expaired_ads->count,
                     "availeble_ads_count"=>$availeble_ads->count,
                     "available_ads_count"=>$available_ads_count,
-                    "details"=>"details"
+                    "details"=>$user->notification()
                 ]
             );
     }

@@ -14,7 +14,7 @@ class CreateAdsDurationTable extends Migration
     public function up()
     {
         Schema::create('ads_duration', function (Blueprint $table) {
-            $table->increments("id");
+            $table->increments("id")->unique();
             $table->unsignedBigInteger('ads_id');
             $table->foreign('ads_id')->references('id')->on('ads');
             $table->dateTime('start_at',0);

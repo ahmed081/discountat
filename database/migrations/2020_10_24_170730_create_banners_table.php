@@ -14,7 +14,7 @@ class CreateBannersTable extends Migration
     public function up()
     {
         Schema::create('banners', function (Blueprint $table) {
-            $table->increments("id");
+            $table->increments("id")->unique();
             $table->string("image");
             $table->unsignedBigInteger("id_ads");
             $table->foreign('id_ads')->references('id')->on('ads');   //foreign key id_ads references ads

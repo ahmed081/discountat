@@ -6,6 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDeviceTable extends Migration
 {
+/*     php artisan migrate --path='./database/migrations/2020_10_22_145108_create_device_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_22_145048_create_type_table.php'
+    php artisan migrate --path='./database/migrations/2014_10_12_000000_create_users_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_23_151851_create_login_table.php'
+    php artisan migrate --path='./database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_22_145146_create_categories_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_22_145127_create_brands_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_22_145210_create_ads_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_22_145251_create_ads_view_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_24_170730_create_banners_table.php'
+    php artisan migrate --path='./database/migrations/2020_10_24_104308_create_ads_duration_table.php' */
+
     /**
      * Run the migrations.
      *
@@ -14,7 +26,7 @@ class CreateDeviceTable extends Migration
     public function up()
     {
         Schema::create('device', function (Blueprint $table) {
-            $table->increments("id");
+            $table->increments("id")->unique();
             $table->string("name",20);
             $table->timestamps();
         });

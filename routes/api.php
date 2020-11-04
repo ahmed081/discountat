@@ -4,7 +4,9 @@ use App\Http\Controllers\AdsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\brandsController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\Notification;
 use App\Http\Controllers\Statistic;
+use App\Http\Controllers\Subscription;
 use App\Http\Controllers\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +45,10 @@ Route::middleware('auth:sanctum')->post('/brands/edit/{id}', [brandsController::
 
 Route::middleware('auth:sanctum')->get('/categories', [CategoriesController::class,'get_all_categories'])->name('get_all_categories');
 Route::middleware('auth:sanctum')->get('/categories/{id}', [CategoriesController::class,'get_one'])->name('get_one_category');
+
+
+Route::middleware('auth:sanctum')->get('/notifications', [Notification::class,'notifications'])->name('notification');
+Route::middleware('auth:sanctum')->post('/subscribe', [Subscription::class,'subscribe'])->name('subscribtion');
 
 
 Route::get('/statistics/{feature}/{ads_id}', [Statistic::class,'statistic'])->name('statistic');

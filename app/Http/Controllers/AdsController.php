@@ -33,16 +33,21 @@ class AdsController extends Controller
                 'message' => ['The provided credentials are incorrect.'],
             ]);
         }
-        $ads = Ads::where("ads.id",$id_ads)->join("brands","brands.id","ads.brand_id")->select("ads.*")->first();
+        $ads = Ads::where("ads.id",$id_ads)->join("brands","brands.id","ads.brand_id")->select("ads.*","brands.mobile","brands.web_site","brands.geolocalisation")->first();
         //return $ads;
         $brand = brands::where("id",$ads->brand_id)->first();
         $category = categories::where("id",$brand->category_id)->first();
         $banner = Banner::where("id_ads",$ads->id)->get();
+        $recommendation = Ads::join("brands","brands.id","ads.brand_id")->where("brands.user_id",$brand->user_id)->select("ads.*")->get();
         $ads->banner = $banner;
-        
+        foreach ($recommendation as $rec ) {
+            $banner = Banner::where("id_ads",$rec->id)->first();
+            $rec->image = $banner->image;
+        }
         return response()->json([
             "ads"=>$ads,
             "ads_category"=>$category,
+            "recommendation"=>$recommendation
         ]);
     }   
     /* 

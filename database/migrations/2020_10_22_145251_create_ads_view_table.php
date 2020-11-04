@@ -14,7 +14,7 @@ class CreateAdsViewTable extends Migration
     public function up()
     {
         Schema::create('ads_view', function (Blueprint $table) {
-            $table->increments("id");
+            $table->increments("id")->unique();
             $table->unsignedBigInteger('id_ads');
             $table->unsignedBigInteger('id_user');
             $table->foreign('id_ads')->references('id')->on('ads');

@@ -8,6 +8,8 @@ use App\Models\categories as Categories;
 use App\Models\ads as Ads;
 use App\Models\ads_duration as Ads_duration;
 use App\Models\ads_view as Ads_view;
+use App\Models\Banner;
+use App\Models\Subscription;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
@@ -25,24 +27,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/test', function (){
-    $user=Users::where('id',1)->first();
-    $all_ads_count = ads::join("brands","brands.id","ads.brand_id")
-        ->where("brands.user_id",$user->id)
-        ->select(DB::raw('count(*) as ads_count'))
-        ->get();
-    $expaired_ads = ads::join("brands","brands.id","ads.brand_id")
-        ->where("brands.user_id",$user->id)
-        ->where('ads.availability',0)
-        ->select(DB::raw('count(*) as expaired_ads_count'))
-        ->get();
-    $expaired_ads = ads::join("brands","brands.id","ads.brand_id")
-        ->where("brands.user_id",$user->id)
-        ->where('ads.availability',0)
-        ->select(DB::raw('count(*) as expaired_ads_count'))
-        ->get();
-    $available_ads_count = $user->free_ads_count;
-    return $available_ads_count;
+Route::get('/', function (){
+    return view("welcome");
 });
 Route::get('/init', function () {
 
@@ -75,9 +61,9 @@ Route::get('/init', function () {
         $cat->save();
     }
     $users = array(
-        ["ahmed el assimi","assimi33.y@gmail.com","123456789",1,1,1,12,null],
-        ["omar el assimi","omar@gmail.com","123456789",1,1,1,12,null],
-        ["amine el assimi","amine@gmail.com","123456789",1,1,1,12,null],
+        ["ahmed el assimi","assimi33.y@gmail.com","123456789",1,1,1,0,null],
+        ["omar el assimi","omar@gmail.com","123456789",1,1,1,0,null],
+        ["amine el assimi","amine@gmail.com","123456789",1,1,1,0,null],
     );
     foreach($users as $user)
     {
@@ -89,7 +75,15 @@ Route::get('/init', function () {
 
     $users = Users::all();
     
-        
+    foreach($users as $user)
+    {
+       
+        $sub = new Subscription();
+        $sub->init((new Carbon()),(new Carbon())->addYear(),$user->id);
+        $user->free_ads_count=$user->free_ads_count+12;
+        $user->save();
+        $sub->save();
+    }   
     $categories = Categories::all();
     $i = 0;
     foreach($categories as $category)
@@ -105,6 +99,7 @@ Route::get('/init', function () {
     }
     // add free ads
     $brands = Brands::all();
+    $images=["5d22ef90427541fa228abe8f01378f22.png","8ce4a712f354e2f762238bcd83ae8f72.png","bb8a84cef313a3ae832514385d9454e5.png"];
     foreach($brands as $brand)
     {
         $user = Users::where("id",$brand->user_id)->first();
@@ -113,6 +108,12 @@ Route::get('/init', function () {
             $ads->init("ads ".$brand->name,"description ads ".$brand->name,0,1,$brand->id);
             $ads_periode = new Ads_duration;
             $ads->save();
+            foreach ($images as $image) {
+                $banner = new Banner();
+                $url = url('/files/'.$image);
+                $banner->init($url,$ads->id);
+                $banner->save();
+            }
             $date = Carbon::now();
             $next_month = Carbon::now()->addMonth();
             $ads_periode->init($ads->id,1,$date,$next_month,0);
@@ -120,6 +121,7 @@ Route::get('/init', function () {
             $user->free_ads_count = $user->free_ads_count-1;
             $user->save();
             $brand->save();
+            
         }
         
         

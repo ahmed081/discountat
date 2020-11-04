@@ -14,7 +14,7 @@ class CreateLoginTable extends Migration
     public function up()
     {
         Schema::create('login', function (Blueprint $table) {
-            $table->increments("id");
+            $table->increments("id")->unique();
             $table->unsignedBigInteger("id_device");
             $table->unsignedBigInteger("id_user");
             $table->boolean("logged_out");
