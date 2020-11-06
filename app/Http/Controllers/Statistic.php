@@ -10,8 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 class Statistic extends Controller
 {
-    //
-
     public function dashboard(Request $request){
         /* 
             TO DO 

@@ -19,7 +19,28 @@ class users extends Model
         $this->type = $type;
         $this->free_ads_count = $free_ads_count;
     }
-
+    public function get_all()
+    {
+        return users::all();
+    }
+    public function get_by_id($id)
+    {
+        return users::where("id",$id)->first();
+    }
+    public function get_brands()
+    {
+        return brands::where("user_id",$this->id)->get();
+    }
+    public function get_ads()
+    {
+        return Ads::join("brands","brands.id","ads.brand_id")
+        ->where("user_id",$this->id)
+        ->get();
+    }
+    public function get_subs(Type $var = null)
+    {
+        return Subscription::where("user_id",$this->id);
+    }
     public function notifications()
     {
         $subs = Subscription::where('user_id',$this->id)->get();

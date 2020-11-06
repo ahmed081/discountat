@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateDeviceTable extends Migration
 {
-/*     php artisan migrate --path='./database/migrations/2020_10_22_145108_create_device_table.php'
+/*
+
+    php artisan migrate --path='./database/migrations/2020_10_22_145108_create_device_table.php'
     php artisan migrate --path='./database/migrations/2020_10_22_145048_create_type_table.php'
     php artisan migrate --path='./database/migrations/2014_10_12_000000_create_users_table.php'
     php artisan migrate --path='./database/migrations/2020_10_23_151851_create_login_table.php'
@@ -16,7 +18,8 @@ class CreateDeviceTable extends Migration
     php artisan migrate --path='./database/migrations/2020_10_22_145210_create_ads_table.php'
     php artisan migrate --path='./database/migrations/2020_10_22_145251_create_ads_view_table.php'
     php artisan migrate --path='./database/migrations/2020_10_24_170730_create_banners_table.php'
-    php artisan migrate --path='./database/migrations/2020_10_24_104308_create_ads_duration_table.php' */
+    php artisan migrate --path='./database/migrations/2020_10_24_104308_create_ads_duration_table.php'
+    php artisan migrate --path='./database/migrations/2020_11_03_164952_create_subscription_table.php' 
 
     /**
      * Run the migrations.

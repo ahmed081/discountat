@@ -34,7 +34,7 @@ class AdsController extends Controller
             ]);
         }
         $ads = Ads::where("ads.id",$id_ads)->join("brands","brands.id","ads.brand_id")->select("ads.*","brands.mobile","brands.web_site","brands.geolocalisation")->first();
-        //return $ads;
+        
         $brand = brands::where("id",$ads->brand_id)->first();
         $category = categories::where("id",$brand->category_id)->first();
         $banner = Banner::where("id_ads",$ads->id)->get();
@@ -152,7 +152,7 @@ class AdsController extends Controller
             ],402);
         $ads->edit($request->title,$request->descritpion,0,1,$request->brand_id);
         $ads->save();
-        return $ads;
+        return $ads;; 
     }
     /* 
         @request_type = GET
@@ -165,7 +165,7 @@ class AdsController extends Controller
         $validator = Validator::make(["id_category"=>$id_category], [
             'id_category' => 'required|integer'
         ]);
-        if ($validator->fails()) {
+        if($validator->fails()) {
             throw ValidationException::withMessages([
                 'message' => ['The provided credentials are incorrect.'],
             ]);
@@ -174,13 +174,13 @@ class AdsController extends Controller
         ->where("category_id",$id_category)
         ->join('categories', 'brands.category_id', '=', 'categories.id')
         ->join('ads', 'brands.id', '=', 'ads.brand_id')
-        ->select('ads.id','ads.title','ads.description','ads.view_count','ads.id', 'categories.name', 'categories.name_ar')
+        ->select('ads.id','ads.title','ads.description','ads.view_count','ads.id', 'categories.name', 'categories.name_ar',"brands.mobile","brands.geolocalisation","brands.web_site")
         ->get();
         foreach ($ads as $a) {
             $ads_duration = Ads_duration::where("ads_id",$a->id)->orderBy('created_at', 'desc')->first();
             $banner = Banner::where("id_ads",$a->id)->get();
             $a->start_at = $ads_duration->start_at;
-            $a->end_at = $ads_duration->start_at;
+            $a->end_at = $ads_duration->end_at;
             $a->banner = $banner;
             
         } 
