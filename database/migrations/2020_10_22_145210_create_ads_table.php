@@ -21,6 +21,9 @@ class CreateAdsTable extends Migration
             $table->boolean("availability");
             $table->unsignedBigInteger('brand_id');
             $table->foreign('brand_id')->references('id')->on('brands');
+            $table->dateTime('start_at',0);
+            $table->dateTime('end_at',0);
+            $table->decimal('price');
             $table->timestamps();
         });
     }

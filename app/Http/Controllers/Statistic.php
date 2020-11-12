@@ -42,10 +42,10 @@ class Statistic extends Controller
             return response()->json(
                 [
                     "all_ads_count"=>$all_ads_count->count,
-                    "expaired_ads_count"=>$expaired_ads->count,
-                    "availeble_ads_count"=>$availeble_ads->count,
+                    "expaired_ads_count"=>$expaired_ads->count+$availeble_ads->count,
+                    "current_ads_count"=>$availeble_ads->count,
                     "available_ads_count"=>$available_ads_count,
-                    "details"=>$user->notification()
+                    "details"=>$user->notifications()
                 ]
             );
     }
@@ -102,7 +102,7 @@ class Statistic extends Controller
                 
                 }   
                 
-                return  $feature_statistic;
+                return response()->json(array_values($feature_statistic))  ;
                 break;
             case 'days':
 
@@ -144,7 +144,7 @@ class Statistic extends Controller
                     else
                         $feature_statistic[(new Carbon($a->created_at))->dayOfWeekIso.""]  ["percentage"] = number_format(($x)*100/$y, 2, '.', '');
                 } 
-                return $feature_statistic;
+                return  response()->json(array_values($feature_statistic)) ;
 
                 break;
             case 'months':
@@ -184,7 +184,7 @@ class Statistic extends Controller
                     else
                         $feature_statistic[(new Carbon($a->created_at))->month.""]  ["percentage"] = number_format(($x)*100/$y, 2, '.', '');
                 } 
-                return $feature_statistic;
+                return  response()->json(array_values($feature_statistic)) ;
 
                 break;
             

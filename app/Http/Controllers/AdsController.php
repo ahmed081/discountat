@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ads as Ads;
-use App\Models\ads_duration as Ads_duration;
 use App\Models\ads_view;
 use App\Models\Banner;
 use App\Models\brands;
@@ -17,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 class AdsController extends Controller
 {
     //
+    
+
     /* 
         @request_type = GET
         @route : /category/ads/{id_ads}
@@ -33,21 +34,23 @@ class AdsController extends Controller
                 'message' => ['The provided credentials are incorrect.'],
             ]);
         }
-        $ads = Ads::where("ads.id",$id_ads)->join("brands","brands.id","ads.brand_id")->select("ads.*","brands.mobile","brands.web_site","brands.geolocalisation")->first();
+        $ads = (new Ads())->get_one($id_ads);
         
-        $brand = brands::where("id",$ads->brand_id)->first();
-        $category = categories::where("id",$brand->category_id)->first();
-        $banner = Banner::where("id_ads",$ads->id)->get();
-        $recommendation = Ads::join("brands","brands.id","ads.brand_id")->where("brands.user_id",$brand->user_id)->select("ads.*")->get();
+        $brand = (new brands())->get_one($ads->brand_id);
+        
+        $category = (new categories())->get_one($ads->brand_id);
+        $banner = (new Banner())->get_ads_banner($ads->id);
+        $recommandation =(new Ads())->recommandation($brand->user_id) ;
+        
         $ads->banner = $banner;
-        foreach ($recommendation as $rec ) {
-            $banner = Banner::where("id_ads",$rec->id)->first();
+        foreach ($recommandation as $rec ) {
+            $banner = (new Banner())->get_ads_one_banner($rec->id);
             $rec->image = $banner->image;
         }
         return response()->json([
             "ads"=>$ads,
             "ads_category"=>$category,
-            "recommendation"=>$recommendation
+            "recommandation"=>$recommandation
         ]);
     }   
     /* 
@@ -56,7 +59,7 @@ class AdsController extends Controller
         @params : 
             {
                 "title":"title",
-                "description":"descritpion",
+                "description":"description",
                 "start_at":"start_at",
                 "end_at":"end_at",
                 "brand_id":"bran_id"
@@ -64,7 +67,7 @@ class AdsController extends Controller
         @Autorisation : Barier token
     */
     public function add_ads(Request $request )
-    {
+    {   
         // to do 
         /* 
             paiement required
@@ -74,8 +77,8 @@ class AdsController extends Controller
         $validateData = $request->validate([
                 "title"=>"required|string",
                 "description"=>"required|string",
-                "start_at"=>"required|string",
-                "end_at"=>"required|string",
+                "start_at"=>"required|date",
+                "end_at"=>"date",
                 "brand_id"=>"required|integer",
                 "banner"=>"required"
         ]);
@@ -92,23 +95,35 @@ class AdsController extends Controller
             ],401);
         if($user->free_ads_count>0)
         {
-            $ads = new Ads;
-            $ads->init($request->title,$request->descritpion,0,1,$request->brand_id);
-            $ads->save();
-            foreach ($request->file("banner") as $file) {
+            DB::beginTransaction();
+            try {
+                $ads = new Ads;
+                $start_at = new Carbon($request->start_at);
+                $end_at = (new Carbon($start_at))->addMonth();
+                if($request->has("end_at"))
+                    $end_at = new Carbon($request->end_at);
+                $ads->init($request->title,$request->description,0,1,$request->brand_id,$start_at,$end_at,0);
+                $ads->description = $request->description;
+                $ads->save();
+                foreach ($request->file("banner") as $file) {
 
-                $banner = new Banner();
-                $file->move(public_path().'/files/', $file->getClientOriginalName());
-                $url = url('/files/'.$file->getClientOriginalName());
-                $banner->init($url,$ads->id);
-                $banner->save();
+                    $banner = new Banner();
+                    $file->move(public_path().'/files/', $file->getClientOriginalName());
+                    $url = url('/files/'.$file->getClientOriginalName());
+                    $banner->init($url,$ads->id);
+                    $banner->save();
+                }
+                $user->free_ads_count = $user->free_ads_count-1;
+                $user->save();
+                DB::commit();
+                return response()->json($ads);
+            } catch (\Exception $th) {
+                DB::rollBack();
+                return response()->json([
+                    "message"=> "Internal Server Error!!."
+                ],500);
             }
-            $ads_duration = new Ads_duration();
-            $ads_duration->init($ads->id,1,$request->start_at,$request->end_at,0);
-            $ads_duration->save();
-            $user->free_ads_count = $user->free_ads_count-1;
-            $user->save();
-            return response()->json($ads);
+            
         }
         else return response()->json([
                 "message"=> "payment required!!."
@@ -120,7 +135,7 @@ class AdsController extends Controller
         @params : 
             {
                 "title":"title",
-                "description":"descritpion",
+                "description":"description",
                 "brand_id":"bran_id"
             }
         @Autorisation : Barier token
@@ -142,7 +157,9 @@ class AdsController extends Controller
         $validateData = $request->validate([
             "title"=>"required|string",
             "description"=>"required|string",
-            "brand_id"=>"required|integer"
+            "brand_id"=>"required|integer",
+            "start_at" => "required|date",
+            "end_at" => "required|date",
         ]);
         $user = $request->user();
         $ads = Ads::where("ads.id",$id_ads)->join("brands","ads.brand_id","=","brands.id")->where("brands.user_id",$user->id)->select("ads.*")->first();
@@ -150,9 +167,18 @@ class AdsController extends Controller
             return response()->json([
                 "message"=> "Unauthenticated."
             ],402);
-        $ads->edit($request->title,$request->descritpion,0,1,$request->brand_id);
+        $ads->edit(
+                $request->title,
+                $request->description,
+                $ads->view_count,
+                $ads->availability,
+                $request->brand_id,
+                $request->start_at,
+                $request->end_at,
+                $ads->price
+        );
         $ads->save();
-        return $ads;; 
+        return $ads;
     }
     /* 
         @request_type = GET
@@ -170,19 +196,27 @@ class AdsController extends Controller
                 'message' => ['The provided credentials are incorrect.'],
             ]);
         }
-        $ads = DB::table('brands')
-        ->where("category_id",$id_category)
-        ->join('categories', 'brands.category_id', '=', 'categories.id')
-        ->join('ads', 'brands.id', '=', 'ads.brand_id')
-        ->select('ads.id','ads.title','ads.description','ads.view_count','ads.id', 'categories.name', 'categories.name_ar',"brands.mobile","brands.geolocalisation","brands.web_site")
-        ->get();
+        $ads = (new Ads())->ads_by_category($id_category);
         foreach ($ads as $a) {
-            $ads_duration = Ads_duration::where("ads_id",$a->id)->orderBy('created_at', 'desc')->first();
             $banner = Banner::where("id_ads",$a->id)->get();
-            $a->start_at = $ads_duration->start_at;
-            $a->end_at = $ads_duration->end_at;
             $a->banner = $banner;
-            
+        } 
+        return $ads;
+    }
+    /* 
+        @request_type = GET
+        @route : /ads
+        @params : 
+        @Autorisation : Barier token
+    */
+    public function get_all_ads(Request $request)
+    {
+        $user = $request->user();
+        $ads = (new Ads())->get_all($user->id);
+        foreach ($ads as $a) {
+
+            $a->image = (new Banner())->get_ads_one_banner($a->id)->image;
+
         } 
         return $ads;
     }

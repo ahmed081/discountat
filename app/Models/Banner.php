@@ -24,5 +24,20 @@ class Banner extends Model
         # code...
     }
     
+    public function get_one($id)
+    {
+        return Banner::where('id',$id)
+        ->first();
+    }
 
+    public function get_ads_banner($ads_id)
+    {
+        return Banner::where('id_ads',$ads_id)
+        ->get();
+    }
+    public function get_ads_one_banner($ads_id)
+    {
+        return Banner::where('id_ads',$ads_id)
+        ->first();
+    }
 }

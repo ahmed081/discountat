@@ -16,4 +16,11 @@ class categories extends Model
         $this->name = $name;
         $this->image_url = $image_url;
     }
+
+    public function get_one($id)
+    {
+        return categories::where('id',$id)
+        ->where('availability',1)
+        ->first();
+    }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\brandsController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Notification;
 use App\Http\Controllers\Statistic;
 use App\Http\Controllers\Subscription;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->post('/logout', [AuthController::class,'logou
 
 Route::middleware('auth:sanctum')->get('/profile', [UsersController::class,'get_current'])->name('get_current_user');
 Route::middleware('auth:sanctum')->put('/profile/edit', [UsersController::class,'edit_profile'])->name('edit_profile');
+Route::middleware('auth:sanctum')->post('/profile/editPDP', [UsersController::class,'edit_pdp'])->name('edit_pdp');
 
 
 Route::middleware('auth:sanctum')->get('/category/ads/{id_ads}', [AdsController::class,'get_one'])->name('get_one_ads');
@@ -36,12 +38,13 @@ Route::middleware('auth:sanctum')->delete('/category/ads/delete/{id_ads}', [AdsC
 Route::middleware('auth:sanctum')->get('/category/{id_category}/ads', [AdsController::class,'get_ads_by_category'])->name('get_ads_by_category');
 Route::middleware('auth:sanctum')->put('/ads/{id_ads}/view/add', [AdsController::class,'view_ads'])->name('view_ads');
 Route::middleware('auth:sanctum')->get('/ads/{id_ads}/view', [AdsController::class,'ads_view'])->name('ads_view');
+Route::middleware('auth:sanctum')->get('/ads', [AdsController::class,'get_all_ads'])->name('get_all_ads');
 
 
 Route::middleware('auth:sanctum')->get('/brands', [brandsController::class,'get_all_brands'])->name('get_all_brands');
 Route::middleware('auth:sanctum')->get('/brands/{id}', [brandsController::class,'get_one'])->name('get_one_brand');
 Route::middleware('auth:sanctum')->post('/brands/add', [brandsController::class,'add_brand'])->name('add_brand');
-Route::middleware('auth:sanctum')->post('/brands/edit/{id}', [brandsController::class,'edit_brand'])->name('edit_brand');
+Route::middleware('auth:sanctum')->put('/brands/edit/{id}', [brandsController::class,'edit_brand'])->name('edit_brand');
 
 Route::middleware('auth:sanctum')->get('/categories', [CategoriesController::class,'get_all_categories'])->name('get_all_categories');
 Route::middleware('auth:sanctum')->get('/categories/{id}', [CategoriesController::class,'get_one'])->name('get_one_category');
@@ -49,6 +52,11 @@ Route::middleware('auth:sanctum')->get('/categories/{id}', [CategoriesController
 
 Route::middleware('auth:sanctum')->get('/notifications', [Notification::class,'notifications'])->name('notification');
 Route::middleware('auth:sanctum')->post('/subscribe', [Subscription::class,'subscribe'])->name('subscribtion');
+
+
+
+Route::middleware('auth:sanctum')->get('/messageCategories', [MessageController::class,'message_categories'])->name('message_categories');
+Route::middleware('auth:sanctum')->post('/contact', [MessageController::class,'contact'])->name('contact');
 
 
 Route::get('/statistics/{feature}/{ads_id}', [Statistic::class,'statistic'])->name('statistic');

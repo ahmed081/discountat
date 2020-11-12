@@ -32,4 +32,14 @@ class brands extends Model
         $this->user_id = $user_id;
         $this->category_id = $category_id;
     }
+
+    public function get_one($id)
+    {
+        return brands::where('id',$id)->where('availability',1)->first();
+    }
+
+    public function get_user_brands($user_id)
+    {
+        return brands::where('user_id',$user_id)->where('availability',1)->first();
+    } 
 }

@@ -28,7 +28,7 @@ class brandsController extends Controller
             $category = Categories::where("id",$brand->category_id)->first();
             $brand->category = $category;
         }
-        return $brands;
+        return response()->json($brands);
     }
 
     /* 
@@ -93,7 +93,7 @@ class brandsController extends Controller
         return $brand;
     }
 /* 
-        @request_type = POST
+        @request_type = PUT
         @route : /brands/edit/{id}
         @params : 
             {
@@ -117,13 +117,13 @@ class brandsController extends Controller
                 "category_id"=>"required|integer",
         ]);
         $user = $request->user();
-        $brand = Brands::where("id",$id->first)->where("user_id",$user->id);
+        $brand = Brands::where("id",$id)->where("user_id",$user->id)->first();
         
         $brand->edit($request->name,1,$request->mobile,$request->web_site,$request->address,$request->geolocalisation,$request->category_id,$user->id); 
         $brand->save();
         
         
-        return $brand;
+        return response()->json($brand);
     }
   
   
