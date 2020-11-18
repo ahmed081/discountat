@@ -42,6 +42,8 @@
 		<!-- Skin css-->
 		<link href="{{asset('template/css/skins-rtl.css')}}" rel="stylesheet" />
 
+		<!-- File Uploads css-->
+		<link href="{{asset('template/plugins/fileupload/css/dropify.css')}}" rel="stylesheet" type="text/css" />
 	</head>
 
 	<body class="app sidebar-mini">
@@ -74,11 +76,11 @@
 						<!--Page header-->
 						<div class="page-header">
 							<div class="page-leftheader">
-								<h4 class="page-title">Moderators</h4>
+								<h4 class="page-title">Moderators </h4>
 								<ol class="breadcrumb pr-0">
 								<ol class="breadcrumb pr-0">
-                                    <li class="breadcrumb-item active" aria-current="page">id</li>
-                                    <li class="breadcrumb-item"><a href="/Moderators">Moderators</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">{{$data['moderator']->id}}</li>
+                                    <li class="breadcrumb-item"><a href="/moderators">Moderators</a></li>
 								</ol>
 							</div>
 							
@@ -94,28 +96,52 @@
 										<div class="inner-all">
 											<ul class="list-unstyled">
 												<li class="text-center border-bottom-0">
-													<img data-no-retina="" class="img-circle img-responsive img-bordered-primary" src="{{asset('template/images/users/16.jpg')}}" alt="John Doe">
+													<img data-no-retina="" class="img-circle img-responsive img-bordered-primary" src="{{$data['moderator']->image}}" alt="John Doe">
 												</li>
 												<li class="text-center">
-													<h4 class="text-capitalize mt-3 mb-0">Ahmed EL ASSIMI</h4>
-													<p class="text-muted text-capitalize">Enabled <i style="font-size: 11px;" class="ion-record"></i></p>
+													<h4 class="text-capitalize mt-3 mb-0">{{$data["moderator"]->full_name}}  <span style="font-size: 11px; color: #8e9cad !important;">(moderator)</span>
+														<a href="#" data-toggle="modal" data-target="{{"#updateuser".$data['moderator']->id}}" style="padding: 0;"data-toggle="tooltip" title="" data-original-title="Edit" class="btn btn-default"><i class="fa fa-edit ml-2"></a></i>
+													</h4>
+													
+													@if ($data["moderator"]->availability===0)
+														<p class="text-muted text-capitalize">desibled <i style="font-size: 11px; color: red" class="ion ion-record"></i></p>
+														
+													@else
+														<p class="text-muted text-capitalize">enabled <i style="font-size: 11px; color:#3cda08" class="ion ion-record"></i></p>
+													@endif
 												</li>
 												<li>
-													<a href="" class="btn btn-primary text-center btn-block">Reset Password</a>
+													
+													@if ($data["moderator"]->availability===1)
+														<form action="/users/desable/{{$data['moderator']->id}}" method="post">
+															@csrf
+															<button type="submit" href="/users/enable/{{$data['moderator']->id}}" style="background: red; border-color: red" class="btn btn-primary text-center btn-block">Desable </button>
+														</form>
+														@else
+														<form action="/users/enable/{{$data['moderator']->id}}" method="post">
+															@csrf
+															<button type="submit" href="/users/enable/{{$data['moderator']->id}}" style="background: #3cda08; border-color: #3cda08" class="btn btn-primary text-center btn-block">Enable </button>
+														</form>
+													@endif
+													<form>
+														<button type="button" class="btn btn-warning text-center btn-block" data-toggle="modal" data-target=" {{"#resertpassword".$data['moderator']->id}}">Reset Password</button>
+													</form>
+													
 												</li>
 												<li>
-													<a href="" class="btn btn-danger text-center btn-block">Disable</a>
-												</li>
-												<li>
-													<a href="#" onclick="document.getElementById('edit-moderator').style.display='';" class="btn btn-success text-center btn-block">Edit</a>
 												</li>
 												<li><br></li>
 												<li>
 													<div class=" no-padding ">
 														<ul class="list-group ">
-															<li class="list-group-item"><i class="fa fa-envelope ml-4"></i> support@demo.com</li>
-															<li class="list-group-item"><i class="fa fa-phone ml-4"></i> +125 5826 3658 </li>
-															<li class="list-group-item"><i class="fa fa-home ml-4"></i> Country</li>
+															<li class="list-group-item"><i class="fa fa-envelope ml-4"></i> {{$data["moderator"]->email}}</li>
+														</ul>
+													</div>
+												</li>
+												<li>
+													<div class=" no-padding ">
+														<ul class="list-group ">
+															<li class="list-group-item"><i class="fa fa-home ml-4"></i> Kuwait</li>
 														</ul>
 													</div>
 												</li>
@@ -126,28 +152,12 @@
 								
 							</div>
 
-							<div class="col-xl-7 col-lg-7 col-md-12" id="edit-moderator" style="display: none">
-								<form>
-									<div class="modal-body">
-										
-											<div class="form-group">
-												<label for="recipient-name" class="form-control-label">Full Name</label>
-												<input type="text" name="full_name" class="form-control" id="full-name">
-											</div>
-											
-											<div class="form-group">
-												<label for="country" class="form-control-label">Country</label>
-												<input type="text" name="country" class="form-control" id="country">
-											</div>
-											
-										
-									</div>
-									<div class="modal-footer">
-										<button type="button" style="background: white; border-radius: 17px; width: 80px; height: 40px; color:#1FC0D8;border: 1px solid ;#1FC0D8" class="btn" >Close</button>
-										<button type="submit" style="background: #1FC0D8; border-radius: 17px; width: 180px; height: 40px; color: white;"  class="btn">Edit Moderator</button>
-									</div>
-								</form>
+							<div class="col-xl-8 col-lg-6 col-md-12">
+								<!--Start subscription Components-->
+								<!--Row-->
 								
+								<!--End row-->
+								<!--End subscription Components-->
 							</div>
 
 
@@ -167,6 +177,8 @@
 			<!-- End Footer-->
 
 		</div>
+		@include('components.reset_password',['user'=>$data['moderator']])
+		@include('components.update.update_user',['user'=>$data['moderator']])
 
 		<!-- Back to top -->
 		<a href="#top" id="back-to-top" style="display: inline;"><i class="fa fa-angle-up"></i></a>
@@ -204,6 +216,10 @@
 
 		<!-- Select2 js -->
 		<script src="{{asset('template/plugins/select2/select2.full.min.js')}}"></script>
+
+		<!-- File uploads js -->
+		<script src="{{asset('template/plugins/fileupload/js/dropify.js')}}"></script>
+		<script src="{{asset('template/js/filupload.js')}}"></script>
 
 		<!-- Custom js-->
 		<script src="{{asset('template/js/custom.js')}}"></script>

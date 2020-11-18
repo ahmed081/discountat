@@ -21,6 +21,7 @@ class CreatebrandsTable extends Migration
             $table->string("web_site",50);   
             $table->string("address",150);   
             $table->string("geolocalisation");   
+            $table->string("country")->nullable()->default("Kuwait");   
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('user_id');
             

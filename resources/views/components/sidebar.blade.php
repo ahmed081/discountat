@@ -8,6 +8,21 @@
                 <h6 class=" mb-1 text-dark">Adam Daif</h6>
                 <span class="text-muted app-sidebar__user-name text-sm">Admin</span>
             </div>
+            <div class="sidebar-navs mt-3">
+                <ul class="" id="tabs_3" role="tablist">
+                    <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Edit Profile">
+                        <a class="nav-link border h-6 text-center m-2" id="tab21" data-toggle="tab" href="#tabs_2_1" role="tab" >
+                            <i class="fe fe-settings"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Messages">
+                        <a class="nav-link border h-6  m-2" id="tab22" data-toggle="tab" href="#tabs_2_2" role="tab" >
+                            <i class="fe fe-mail"></i>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
             
         </div>
     </div>

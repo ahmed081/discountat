@@ -18,8 +18,9 @@ class CreateUsersTable extends Migration
             $table->string('full_name',80);
             $table->string('email',100)->unique();
             $table->string('password',255);
-            $table->string('image',50)->nullable();
+            $table->string('image',255)->nullable()->default("https://www.w3schools.com/howto/img_avatar.png");
             $table->boolean('availability');
+            $table->boolean('country')->nullable()->default("Kuwait");
             $table->unsignedBigInteger('type');
             $table->integer('free_ads_count'); 
             $table->timestamps();

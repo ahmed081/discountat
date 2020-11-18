@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class categories extends Model
 {
     use HasFactory;
-    protected $hidden = ["availability","created_at","updated_at"];
+    protected $hidden = ["created_at","updated_at"];
     
     protected $table = 'categories';
     function init($availability , $name,$image_url) {

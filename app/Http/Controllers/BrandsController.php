@@ -6,6 +6,7 @@ use App\Models\categories as Categories;
 use App\Models\brands as Brands;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -127,4 +128,53 @@ class brandsController extends Controller
     }
   
   
+    function web_get_all (){
+        $brands = Brands::join('categories','categories.id',"brands.category_id")
+        ->join('ads',"ads.brand_id","brands.id")
+        ->select('brands.*',DB::raw('categories.name as category_name, categories.name_ar as category_name_ar, count(*) as ads_count'))
+        ->groupBy("brands.id")
+        ->get();
+        $categories = Categories::where("availability",1)->get();
+    
+    
+        return view("brands.brands")->with("data",[
+                "brands"=>$brands,
+                "categories"=>$categories
+        ]);
+    }
+
+    function web_update(Request $request,$id){
+        $brand = Brands::where('id',$id)->first();
+        DB::beginTransaction();
+        try {
+            $brand->name = $request->name ;
+            $brand->category_id = $request->category_id;
+            $brand->mobile = $request->mobile;
+            $brand->web_site = $request->web_site;
+            $brand->address = $request->address;
+            if($request->has("availability"))
+                $brand->availability = 1;
+            else 
+                $brand->availability = 0;
+            $brand->save();
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+        }
+        
+        return redirect(URL::previous());
+    }
+
+    function enable (Request $request , $id){
+        $brand = Brands::where('id',$id)->first();
+        $brand->availability = 1;
+        $brand->save();
+        return redirect("/brands");
+    }
+    function desable (Request $request , $id){
+        $brand = Brands::where('id',$id)->first();
+        $brand->availability = 0;
+        $brand->save();
+        return redirect("/brands");
+    }
 }

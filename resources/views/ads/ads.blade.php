@@ -97,44 +97,7 @@
 								</div>
 								<div class="card-body">
                                 	<div class="table-responsive">
-									<table id="example" class="table table-striped table-bordered" style="width:100%">
-										<thead>
-											<tr>
-                                                <th class="wd-15p">Title</th>
-                                                <th class="wd-25p">Country</th>
-												<th class="wd-15p">availabily</th>
-												<th class="wd-25p">Brand</th>
-                                                <th class="wd-25p">Views</th>
-												<th class="wd-20p">Start at</th>
-												<th class="wd-20p">Ends at</th>
-												<th class="wd-15p">price</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td><a href="/ads/1">ads1 title</a></td>
-												<td>Kuwait</td>
-												<td>active</td>
-												<td><a href="/brands/1">brand's name </a></td>
-												<td>20</td>
-												<td>2020/03/12</td>
-												<td>2020/03/12</td>
-												<td><a href="/categories/1">120$</a></td>
-											</tr>
-											<tr>
-												<td><a href="/ads/1">ads2 title</a></td>
-												<td>Kuwait</td>
-												<td>expired </td>
-												<td><a href="/brands/1">brand's name </a></td>
-												<td>20</td>
-												<td>2020/03/12</td>
-												<td>2020/03/12</td>
-												<td><a href="/categories/1">120$</a></td>
-											</tr>
-											
-											
-										</tbody>
-									</table>
+										@include('components.tables.table_ads')
 								</div>
                                 </div>
 								<!-- table-wrapper -->
@@ -155,7 +118,12 @@
 			<!-- End Footer-->
 
 		</div>
-
+		@foreach ($data['ads'] as $ads)
+		@include('components.delete.delete_ads',['ads'=>$ads])
+		@endforeach
+		@foreach ($data['ads'] as $ads)
+			@include('components.update.update_ads',['ads'=>$ads,'brands'=>$data['brands']])
+		@endforeach
 		<!-- Back to top -->
 		<a href="#top" id="back-to-top" style="display: inline;"><i class="fa fa-angle-up"></i></a>
 

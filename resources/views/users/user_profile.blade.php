@@ -42,10 +42,18 @@
 		<!-- Skin css-->
 		<link href="{{asset('template/css/skins-rtl.css')}}" rel="stylesheet" />
 
+		<!-- File Uploads css-->
+		<link href="{{asset('template/plugins/fileupload/css/dropify.css')}}" rel="stylesheet" type="text/css" />
+
+		<!-- Time picker css -->
+		<link href="{{asset('template/plugins/time-picker/jquery.timepicker.css')}}" rel="stylesheet" />
+
+		<!-- Date Picker css -->
+		<link href="{{asset('template/plugins/date-picker/date-picker.css')}}" rel="stylesheet" />
 	</head>
 
 	<body class="app sidebar-mini">
-
+		
 		<!---Global-loader-->
 		<div id="global-loader" >
 			<img src="{{asset('template/images/svgs/loader.svg')}}" alt="loader">
@@ -77,7 +85,7 @@
 								<h4 class="page-title">Users</h4>
 								<ol class="breadcrumb pr-0">
 								<ol class="breadcrumb pr-0">
-                                    <li class="breadcrumb-item active" aria-current="page">id</li>
+                                    <li class="breadcrumb-item active" aria-current="page">{{$data['user']->id}}</li>
                                     <li class="breadcrumb-item"><a href="/users">Users</a></li>
 								</ol>
 							</div>
@@ -94,23 +102,45 @@
 										<div class="inner-all">
 											<ul class="list-unstyled">
 												<li class="text-center border-bottom-0">
-												<img data-no-retina="" class="img-circle img-responsive img-bordered-primary" src="{{asset('template/images/users/16.jpg')}}" alt="John Doe">
+												<img data-no-retina="" class="img-circle img-responsive img-bordered-primary" src="{{$data['user']->image}}" alt="John Doe">
 												</li>
 												<li class="text-center">
-													<h4 class="text-capitalize mt-3 mb-0">Ahmed EL ASSIMI</h4>
-													<p class="text-muted text-capitalize">desibled <i style="font-size: 11px;" class="ion ion-record"></i></p>
+													<h4 class="text-capitalize mt-3 mb-0">{{$data["user"]->full_name}} 
+														<a href="#" data-toggle="modal" data-target="{{"#updateuser".$data['user']->id}}" style="padding: 0;"data-toggle="tooltip" title="" data-original-title="Edit" class="btn btn-default"><i class="fa fa-edit ml-2"></a></i>
+													</h4>
+													
+													@if ($data["user"]->availability===0)
+														<p class="text-muted text-capitalize">desibled <i style="font-size: 11px; color: red" class="ion ion-record"></i></p>
+														
+													@else
+														<p class="text-muted text-capitalize">enable <i style="font-size: 11px; color:#3cda08" class="ion ion-record"></i></p>
+													@endif
 												</li>
 												<li>
-													<a href="" class="btn btn-success text-center btn-block">enable </a>
-													<a href="" class="btn btn-primary text-center btn-block">Statistics</a>
+													
+													@if ($data["user"]->availability===1)
+														<form action="/users/desable/{{$data['user']->id}}" method="post">
+															@csrf
+															<button type="submit" href="/users/enable/{{$data['user']->id}}" style="background: red; border-color: red" class="btn btn-primary text-center btn-block">Desable </button>
+														</form>
+														@else
+														<form action="/users/enable/{{$data['user']->id}}" method="post">
+															@csrf
+															<button type="submit" href="/users/enable/{{$data['user']->id}}" style="background: #3cda08; border-color: #3cda08" class="btn btn-primary text-center btn-block">Enable </button>
+														</form>
+													@endif
+													<form>
+														<button type="button" class="btn btn-warning text-center btn-block" data-toggle="modal" data-target=" {{"#resertpassword".$data['user']->id}}">Reset Password</button>
+													</form>
+													<form>
+														<button type="button" class="btn btn-primary text-center btn-block">Statistics</button>
+													</form>
 												</li>
 												<li><br></li>
 												<li>
 													<div class=" no-padding ">
 														<ul class="list-group ">
-															<li class="list-group-item"><i class="fa fa-envelope ml-4"></i> support@demo.com</li>
-															<li class="list-group-item"><i class="fa fa-phone ml-4"></i> +125 5826 3658 </li>
-															<li class="list-group-item"><i class="fa fa-home ml-4"></i> address</li>
+															<li class="list-group-item"><i class="fa fa-envelope ml-4"></i> {{$data["user"]->email}}</li>
 														</ul>
 													</div>
 												</li>
@@ -136,31 +166,8 @@
 									</div>
 									<div class="card-body">
 										<div class="table-responsive">
-										<table id="example" class="table table-striped table-bordered" style="width:100%">
-											<thead>
-												<tr>
-													<th class="wd-15p">Active At</th>
-													<th class="wd-25p">Ends At</th>
-													<th class="wd-15p">availabily</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td><a href="/ads/1">2020/03/12</a></td>
-													<td>2020/03/12</td>
-													<td>active</td>
-													
-												</tr>
-												<tr>
-													<td><a href="/ads/1">2020/03/12</a></td>
-													<td>2020/03/12</td>
-													<td>expired </td>
-													
-												</tr>
-												
-												
-											</tbody>
-										</table>
+										@include('components.tables.table_subs')
+										
 									</div>
 									</div>
 									<!-- table-wrapper -->
@@ -190,45 +197,9 @@
 							</div>
 							<div class="card-body">
 								<div class="table-responsive">
-								<table id="example" class="table table-striped table-bordered" style="width:100%">
-									<thead>
-										<tr>
-											<th class="wd-15p">Name</th>
-											<th class="wd-25p">User</th>
-											<th class="wd-25p">Country</th>
-											<th class="wd-20p">Web Site</th>
-											<th class="wd-20p">Address</th>
-											<th class="wd-15p">category</th>
-											<th class="wd-10p">Ads count</th>
-											<th class="wd-10p">created at</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><a href="/moderators/1">brand 1</a></td>
-											<td><a href="users/1">ahmed el assimi</a></td>
-											<td>Kuwait</td>
-											<td>http://ahmed.exemple.com</td>
-											<td>address</td>
-											<td><a href="/categories/1">category</a></td>
-											<td>10</td>
-											<td>2018/03/12</td>
-										</tr>
-										<tr>
-											<td><a href="/moderators/1">brand 1</a></td>
-											<td><a href="users/1">Nabil Hakik</a></td>
-											<td>Kuwait</td>
-											<td>http://nabil.exemple.com</td>
-											<td>address</td>
-											<td><a href="/categories/1">category</a></td>
-											<td>10</td>
-											<td>2018/03/12</td>
-										</tr>
-										
-										
-									</tbody>
-								</table>
-							</div>
+									@include('components.tables.table_brands')
+								
+								</div>
 							</div>
 							<!-- table-wrapper -->
 						</div>
@@ -251,45 +222,8 @@
 							</div>
 							<div class="card-body">
 								<div class="table-responsive">
-								<table id="example" class="table table-striped table-bordered" style="width:100%">
-									<thead>
-										<tr>
-											<th class="wd-15p">Title</th>
-											<th class="wd-25p">Country</th>
-											<th class="wd-15p">availabily</th>
-											<th class="wd-25p">Brand</th>
-											<th class="wd-25p">Views</th>
-											<th class="wd-20p">Start at</th>
-											<th class="wd-20p">Ends at</th>
-											<th class="wd-15p">price</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td><a href="/ads/1">ads1 title</a></td>
-											<td>Kuwait</td>
-											<td>active</td>
-											<td><a href="/brands/1">brand's name </a></td>
-											<td>20</td>
-											<td>2020/03/12</td>
-											<td>2020/03/12</td>
-											<td><a href="/categories/1">120$</a></td>
-										</tr>
-										<tr>
-											<td><a href="/ads/1">ads2 title</a></td>
-											<td>Kuwait</td>
-											<td>expired </td>
-											<td><a href="/brands/1">brand's name </a></td>
-											<td>20</td>
-											<td>2020/03/12</td>
-											<td>2020/03/12</td>
-											<td><a href="/categories/1">120$</a></td>
-										</tr>
-										
-										
-									</tbody>
-								</table>
-							</div>
+									@include('components.tables.table_ads')
+								</div>
 							</div>
 							<!-- table-wrapper -->
 						</div>
@@ -308,7 +242,23 @@
 			<!--Footer-->
 			@include('components.footer')
 			<!-- End Footer-->
-
+			@foreach ($data['brands'] as $brand)
+				@include('components.delete.delete_brand',['brand'=>$brand])
+			@endforeach
+			
+			@foreach ($data['brands'] as $brand)
+				@include('components.update.update_brand',['brand'=>$brand,'categories'=>$data['categories']])
+			@endforeach	
+			@foreach ($data['ads'] as $ads)
+				@include('components.delete.delete_ads',['ads'=>$ads])
+			@endforeach
+			@foreach ($data['ads'] as $ads)
+				@include('components.update.update_ads',['ads'=>$ads,'brands'=>$data['brands']])
+			@endforeach
+			@include('components.update.update_user',['user'=>$data['user']])
+			@include('components.reset_password',['user'=>$data['user']])
+			
+			
 		</div>
 
 		<!-- Back to top -->
@@ -350,6 +300,18 @@
 
 		<!-- Custom js-->
 		<script src="{{asset('template/js/custom.js')}}"></script>
+		
+		<!-- File uploads js -->
+		<script src="{{asset('template/plugins/fileupload/js/dropify.js')}}"></script>
+		<script src="{{asset('template/js/filupload.js')}}"></script>
 
+		<!-- Timepicker js -->
+		<script src="{{asset('template/plugins/time-picker/jquery.timepicker.js')}}"></script>
+		<script src="{{asset('template/plugins/time-picker/toggles.min.js')}}"></script>
+	
+		<!-- Datepicker js -->
+		<script src="{{asset('template/plugins/date-picker/date-picker.js')}}"></script>
+		<script src="{{asset('template/plugins/date-picker/jquery-ui.js')}}"></script>
+		<script src="{{asset('template/plugins/input-mask/jquery.maskedinput.js')}}"></script>
 	</body>
 </html>

@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdsController;
+use App\Http\Controllers\brandsController;
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ModeratorController;
+use App\Http\Controllers\UsersController;
 use App\Models\users as Users;
 use App\Models\device as Device;
 use App\Models\type as Type;
@@ -14,10 +19,12 @@ use App\Models\messages_categories;
 use App\Models\Subscription;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,27 +45,30 @@ Route::get('/login', function (){
 Route::get('/dashboard', function (){
     return view("dashboard.dashboard");
 });
-Route::get('/users', function (){
-    return view("users.users");
-});
-Route::get('/users/{id}', function (){
-    return view("users.user_profile");
-});
-Route::get('/moderators', function (){
-    return view("users.moderators");
-});
-Route::get('/moderators/{id}', function (){
-    return view("users.moderator_profile");
-});
-Route::get('/brands', function (){
-    return view("brands.brands");
-});
-Route::get('/categories', function (){
-    return view("categories.categories");
-});
-Route::get('/ads', function (){
-    return view("ads.ads");
-});
+Route::get('/users', [UsersController::class,"web_all_users"]);
+Route::post('/users/desable/{id}', [UsersController::class,'desable']);
+Route::post('/users/enable/{id}', [UsersController::class,'enable']);
+Route::post('/users/resetpassword/{id}',[UsersController::class,'resetpassword'] );
+Route::post('/users/update/{id}', [UsersController::class,'update']);
+Route::get('/users/{id}', [UsersController::class,'web_get_one']);
+Route::get('/moderators', [ModeratorController::class,'get_all']);
+Route::post('/moderators/add', [ModeratorController::class,'add']);
+Route::get('/moderators/{id}', [ModeratorController::class,'get_one']);
+Route::get('/brands', [brandsController::class,'web_get_all']);
+Route::post('/brands/update/{id}',[brandsController::class,'web_update'] );
+Route::post('/brands/desable/{id}',[brandsController::class,'desable'] );
+Route::post('/brands/enable/{id}',[brandsController::class,'enable']);
+
+
+Route::get('/categories', [CategoriesController::class,'web_get_all']);
+Route::post('/categories/desable/{id}', [CategoriesController::class,'desable'] );
+Route::post('/categories/enable/{id}',  [CategoriesController::class,'enable']);
+Route::post('/categories/update/{id}', [CategoriesController::class,'update'] );
+Route::post('/categories/add',  [CategoriesController::class,'add']);
+Route::get('/ads', [AdsController::class,'web_get_all']);
+Route::post('/ads/desable/{id}',[AdsController::class,'desable']);
+Route::post('/ads/enable/{id}', [AdsController::class,'enable']);
+Route::post('/ads/update/{id}', [AdsController::class,'web_update']);
 Route::get('/Paiements', function (){
     return view("Paiements.Paiements");
 });
@@ -70,11 +80,12 @@ Route::get('/init', function () {
     $type->save();
     $type= new Type();
     $type->init("admin");
-
     $type->save();
-
+    $type= new Type();
+    $type->init("moderator");
+    $type->save();
     $device = new Device();
-    $device->init("android");
+    $device->init("Android");
     $device->save();
     $device = new Device();
     $device->init("IOS");
@@ -90,7 +101,7 @@ Route::get('/init', function () {
     foreach($categories as $category)
     {
         $cat = new Categories();
-        $cat->init(1,$category,"url");
+        $cat->init(1,$category,"https://icon-library.com/images/category-icon/category-icon-6.jpg");
         $cat->save();
     }
     $users = array(
@@ -98,15 +109,33 @@ Route::get('/init', function () {
         ["omar el assimi","omar@gmail.com","123456789",1,1,1,0,null],
         ["amine el assimi","amine@gmail.com","123456789",1,1,1,0,null],
     );
+    //add one Admin
+    $u = new Users;
+    $u->init("Adam Daif","adam.daif@outlook.com",Hash::make(123456789),1,2,1000);
+    $u->image= "https://www.w3schools.com/howto/img_avatar.png";
+    $u->save();
+    //add users
     foreach($users as $user)
     {
         $u = new Users;
         $u->init($user[0],$user[1],Hash::make($user[2]),$user[3],$user[5],500);
+        $u->image= "https://www.w3schools.com/howto/img_avatar.png";
         $u->save();
         
     }
+    //add  moderators
+    $i=0;
+    foreach($users as $user)
+    {
+        $u = new Users;
+        $u->init($user[0],"moderator".$i."@gmail.com",Hash::make($user[2]),$user[3],3,500);
+        $u->image= "https://www.w3schools.com/howto/img_avatar.png";
+        $u->save();
+        $i++;
+        
+    }
 
-    $users = Users::all();
+    $users = Users::where("type",1)->get();
     //add subs
     foreach($users as $user)
     {

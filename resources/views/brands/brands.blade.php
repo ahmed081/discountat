@@ -127,44 +127,8 @@
 								</div>
 								<div class="card-body">
                                 	<div class="table-responsive">
-									<table id="example" class="table table-striped table-bordered" style="width:100%">
-										<thead>
-											<tr>
-                                                <th class="wd-15p">Name</th>
-                                                <th class="wd-25p">User</th>
-												<th class="wd-25p">Country</th>
-												<th class="wd-20p">Web Site</th>
-												<th class="wd-20p">Address</th>
-												<th class="wd-15p">category</th>
-                                                <th class="wd-10p">Ads count</th>
-                                                <th class="wd-10p">created at</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td><a href="#" data-toggle="modal" data-target="#showbrand">brand 1</a></td>
-												<td><a href="users/1">ahmed el assimi</a></td>
-												<td>Kuwait</td>
-												<td>http://ahmed.exemple.com</td>
-												<td>address</td>
-												<td><a href="/categories/1">category</a></td>
-												<td>10</td>
-												<td>2018/03/12</td>
-											</tr>
-											<tr>
-												<td><a href="#" data-toggle="modal" data-target="#showbrand">brand 1</a></td>
-												<td><a href="users/1">Nabil Hakik</a></td>
-												<td>Kuwait</td>
-												<td>http://nabil.exemple.com</td>
-												<td>address</td>
-												<td><a href="/categories/1">category</a></td>
-												<td>10</td>
-												<td>2018/03/12</td>
-											</tr>
-											
-											
-										</tbody>
-									</table>
+									
+										@include('components.tables.table_brands')
 								</div>
                                 </div>
 								<!-- table-wrapper -->
@@ -186,87 +150,13 @@
 
 		</div>
 		<!-- Message Modal -->
-		<div class="modal fade" id="showbrand" tabindex="-1" role="dialog"  aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="example-Modal3">Show Brand</h5>
-						<button type="button"  class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="" id="show-model">
-						<div class="">
-							<!--start banner -->
-							<div id="banner">
-								<div id="carousel-indicators" class="carousel slide" data-ride="carousel">
-									<ol class="carousel-indicators">
-										<li data-target="#carousel-indicators" data-slide-to="0" class="active"></li>
-										<li data-target="#carousel-indicators" data-slide-to="1" class=""></li>
-										<li data-target="#carousel-indicators" data-slide-to="2" class=""></li>
-										<li data-target="#carousel-indicators" data-slide-to="3" class=""></li>
-										<li data-target="#carousel-indicators" data-slide-to="4" class=""></li>
-									</ol>
-									<div class="carousel-inner">
-										<div class="carousel-item active">
-											<img class="d-block w-100" alt="" src="{{asset('template/images/photos/24.jpg')}}" data-holder-rendered="true">
-										</div>
-										<div class="carousel-item">
-											<img class="d-block w-100" alt="" src="{{asset('template/images/photos/25.jpg')}}" data-holder-rendered="true">
-										</div>
-										<div class="carousel-item">
-											<img class="d-block w-100" alt="" src="{{asset('template/images/photos/1.jpg')}}" data-holder-rendered="true">
-										</div>
-										<div class="carousel-item">
-											<img class="d-block w-100" alt="" src="{{asset('template/images/photos/2.jpg')}}" data-holder-rendered="true">
-										</div>
-										<div class="carousel-item">
-											<img class="d-block w-100" alt="" src="{{asset('template/images/photos/3.jpg')}}" data-holder-rendered="true">
-										</div>
-									</div>
-								</div>
-							</div>
-							<!--end banner -->
-
-							<!--start rest on -->
-							<div style="margin: 11px 5px">
-								<div id="Rest_on">
-									<div class="left">
-										
-										<div>Rest on the end of the show</div>
-									</div>
-									<div class="right">
-										<div>
-											22:45:31
-											<img src="{{asset('files/timer.png')}}" alt="">
-										</div>
-									</div>
-								</div>
-							</div>
-							
-							<!--end rest on -->
-							<div style="margin: 11px 5px">
-								<div id="brand_title">
-									<center>title</center>
-								</div>
-								<div id="brand_description">description description description description description description description </div>
-								<div style="height: 10px; width: 100%;"></div>
-								<div id="brand_website">
-									<button type="button" style="background: #1FC0D8; border: none; border-radius: 15px;" class="btn btn-dark">Web <i class="fa fa-chrome fa-spin mr-2"></i></button>
-
-								</div>
-								<div style="height: 28px; width: 100%;"></div>
-								<div id="brand_adress">
-									<div><span style="font-weight: 700">Address</span></div>
-									<div>address address address address </div>
-								</div>
-							</div>
-						</div>
-					</div>
-					
-				</div>
-			</div>
-		</div>
+		@foreach ($data['brands'] as $brand)
+			@include('components.delete.delete_brand',['brand'=>$brand])
+		@endforeach
+		
+		@foreach ($data['brands'] as $brand)
+			@include('components.update.update_brand',['brand'=>$brand,'categories'=>$data['categories']])
+		@endforeach	
 		<!-- Back to top -->
 		<a href="#top" id="back-to-top" style="display: inline;"><i class="fa fa-angle-up"></i></a>
 

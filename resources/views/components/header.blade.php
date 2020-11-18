@@ -10,6 +10,10 @@
             color: #1FC0D8;
             border-color: #1FC0D8;
         }
+        .custom-switch-input:checked~.custom-switch-indicator {
+            background: #1FC0D8;
+            border-color: #1FC0D8;
+        }
         a#back-to-top {
             background: #1FC0D8;
         }

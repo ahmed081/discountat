@@ -97,40 +97,13 @@
 								</div>
 								<div class="card-body">
                                 	<div class="table-responsive">
-									<table id="example" class="table table-striped table-bordered" style="width:100%">
-										<thead>
-											<tr>
-												<th class="wd-15p">Full name</th>
-												<th class="wd-25p">E-mail</th>
-												<th class="wd-20p">country</th>
-												<th class="wd-15p">Menbre Since</th>
-												<th class="wd-10p">Ads Count</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td><a href="/users/1">Ahmed el assimi</a></td>
-												<td>ahmed@gmail.com</td>
-												<td>Kuwait</td>
-												<td>2018/03/12</td>
-												<td>150</td>
-											</tr>
-											<tr>
-												<td><a href="/users/2">Hakki nabil</a></td>
-												<td>Nabil@gmail.com</td>
-												<td>Kuwait</td>
-												<td>2018/03/12</td>
-												<td>220</td>
-											</tr>
-											
-										</tbody>
-									</table>
-								</div>
+										@include('components.tables.table_users')
+									</div>
                                 </div>
 								<!-- table-wrapper -->
 							</div>
 							<!-- section-wrapper -->
-
+							
 							</div>
 						</div>
 						<!--End row-->
@@ -145,7 +118,12 @@
 			<!-- End Footer-->
 
 		</div>
-
+		
+		<!-- delete modal-->
+		@foreach ($data['users'] as $user)
+			@include('components.delete.delete_user',['user',$user])
+		@endforeach
+		
 		<!-- Back to top -->
 		<a href="#top" id="back-to-top" style="display: inline;"><i class="fa fa-angle-up"></i></a>
 

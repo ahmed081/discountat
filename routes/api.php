@@ -74,7 +74,6 @@ Route::post('/test', function (Request $request)
     }
 
     return $arr;
-    # code...
 })->name('test');
 
 /* 

@@ -10,6 +10,7 @@ use App\Models\categories;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -277,4 +278,78 @@ class AdsController extends Controller
         $views = Ads::where("id",$id_ads)->select('view_count',"id")->first();
         return $views;
     }
+
+
+    function web_get_all(){
+        $brands = Brands::join('categories','categories.id',"brands.category_id")
+        ->join('ads',"ads.brand_id","brands.id")
+        ->select('brands.*',DB::raw('categories.name as category_name, categories.name_ar as category_name_ar, count(*) as ads_count'))
+        ->groupBy("brands.id")
+        ->get();
+        $ads = Brands::join('ads',"ads.brand_id","brands.id")
+            ->select('ads.*','brands.name','brands.address','brands.mobile','brands.web_site')
+            ->get();
+        foreach ($ads as $a ) {
+                $date = Carbon::now();
+                $end_at = new Carbon($a->end_at);
+                if($date->lessThanOrEqualTo($end_at))
+                    $a->status = 1;
+                else $a->status = 0;
+            }
+        return view("ads.ads")->with("data",[
+            "brands"=>$brands,
+            "ads"=>$ads
+        ]);
+    }
+
+    function desable (Request $request , $id){
+        $ads = Ads::where('id',$id)->first();
+        $ads->availability = 0;
+        $ads->save();
+        return redirect(URL::previous());
+    }
+ 
+    function enable (Request $request , $id){
+        $ads = Ads::where('id',$id)->first();
+        $ads->availability = 1;
+        $ads->save();
+        return redirect(URL::previous());
+    }
+    function web_update (Request $request,$id){
+        $ads = Ads::where('id',$id)->first();
+        DB::beginTransaction();
+       // return $request;
+        try {
+            $ads->title = $request->title ;
+            $start_at = new Carbon((new Carbon($ads->start_at))->toDateString());
+            $end_at = new Carbon((new Carbon($ads->end_at))->toDateString());
+            if((new Carbon($start_at))->greaterThan(Carbon::now()))
+                if((new Carbon($request->end_at))->greaterThan(new Carbon($request->start_at)))
+                {
+                    $ads->start_at = new Carbon($request->start_at);
+                }
+                    
+    
+            if((new Carbon($end_at))->greaterThan(Carbon::now()))
+                if((new Carbon($request->end_at))->greaterThan(new Carbon($request->start_at)))
+                {
+                    $ads->end_at = new Carbon($request->end_at);
+                }
+                    
+            $ads->brand_id = $request->brand_id;
+            $ads->description = $request->description;
+            if($request->has("availability"))
+                $ads->availability = 1;
+            else 
+                $ads->availability = 0;
+            $ads->save();
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+        }
+        
+        return redirect(URL::previous());
+    }
+
+
 }

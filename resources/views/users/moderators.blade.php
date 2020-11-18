@@ -101,33 +101,8 @@
 								</div>
 								<div class="card-body">
                                 	<div class="table-responsive">
-									<table id="example" class="table table-striped table-bordered" style="width:100%">
-										<thead>
-											<tr>
-												<th class="wd-15p">Full name</th>
-												<th class="wd-25p">E-mail</th>
-												<th class="wd-20p">country</th>
-												<th class="wd-15p">Menbre Since</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td><a href="/moderators/1">Ahmed el assimi</a></td>
-												<td>ahmed@gmail.com</td>
-												<td>Kuwait</td>
-												<td>2018/03/12</td>
-											</tr>
-											<tr>
-												<td><a href="/moderators/1">Hakki nabil</a></td>
-												<td>Nabil@gmail.com</td>
-												<td>Kuwait</td>
-												<td>2018/03/12</td>
-											</tr>
-											
-											
-										</tbody>
-									</table>
-								</div>
+										@include('components.tables.table_moderators')
+									</div>
                                 </div>
 								<!-- table-wrapper -->
 							</div>
@@ -145,6 +120,9 @@
 			<!--Footer-->
 			@include('components.footer')
 			<!-- End Footer-->
+			@foreach ($data['moderators'] as $moderator)
+				@include('components.delete.delete_moderator',["moderator"=>$moderator])
+			@endforeach
 			<!-- Message Modal -->
 			<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog"  aria-hidden="true">
 				<div class="modal-dialog" role="document">
@@ -155,7 +133,8 @@
 								<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
-						<form>
+						<form action="/moderators/add" method="POST">
+							@csrf
 							<div class="modal-body">
 								
 									<div class="form-group">
@@ -169,10 +148,6 @@
 									<div class="form-group">
 										<label for="message-text" class="form-control-label">Password</label>
 										<input type="text" name="password" class="form-control" id="password">
-									</div>
-									<div class="form-group">
-										<label for="message-text" class="form-control-label">Comfirm Password</label>
-										<input type="text" name="comfirm_password" class="form-control" id="password">
 									</div>
 									<div class="form-group">
 										<label for="country" class="form-control-label">Country</label>

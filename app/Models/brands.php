@@ -9,7 +9,7 @@ class brands extends Model
 {
     use HasFactory;
     protected $table = 'brands';
-    protected $hidden = ["user_id","category_id","availability","created_at","updated_at"];
+    protected $hidden = ["user_id","category_id","created_at","updated_at"];
 
     function init($name,$availability,$mobile,$web_site,$address,$geolocalisation,$category_id,$user_id){
         $this->name = $name;
