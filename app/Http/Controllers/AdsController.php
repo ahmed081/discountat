@@ -79,7 +79,6 @@ class AdsController extends Controller
                 "title"=>"required|string",
                 "description"=>"required|string",
                 "start_at"=>"required|date",
-                "end_at"=>"date",
                 "brand_id"=>"required|integer",
                 "banner"=>"required"
         ]);
